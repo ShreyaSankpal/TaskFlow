@@ -158,12 +158,5 @@ TaskFlow is an evolving project focused on frontend development, backend API int
 
 Contributions, feedback, and suggestions are welcome. Please open an issue to discuss substantial changes before submitting a pull request.
 
----
-
-## 📄 License
-
-No license has been specified yet. Add a license file before permitting public reuse or redistribution.
-
----
 
 **TaskFlow — Plan your day. Protect your focus. Make progress.**
