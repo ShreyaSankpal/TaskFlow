@@ -13,6 +13,8 @@
   <div class="brand"><span class="logo">T</span>TaskFlow</div>
   <nav id="nav">
     <a data-v="board" class="on"><i data-lucide="layout-dashboard"></i>Board</a>
+    <a data-v="calendar"><i data-lucide="calendar-days"></i>Calendar</a>
+    <a data-v="matrix"><i data-lucide="layout-grid"></i>Priorities</a>
     <a data-v="focus"><i data-lucide="timer"></i>Focus</a>
     <a data-v="review"><i data-lucide="notebook-pen"></i>Review</a>
     <a data-v="habits"><i data-lucide="flame"></i>Habits</a>
@@ -45,7 +47,7 @@
 
     <form id="addForm" class="add">
       <i data-lucide="plus"></i>
-      <input id="quick" placeholder="Add a task:  Study Maths tomorrow 2h !high #study" maxlength="140" required>
+      <input id="quick" placeholder="Add a task:  Study DSA tomorrow 2h !high #study" maxlength="140" required>
       <button class="btn" type="submit">Add task</button>
     </form>
     <p id="warn" class="warn" hidden></p>
@@ -54,6 +56,23 @@
       <div class="col" data-s="todo"><h3>To do <em id="n-todo">0</em></h3><div class="list" id="l-todo"></div></div>
       <div class="col" data-s="doing"><h3>In progress <em id="n-doing">0</em></h3><div class="list" id="l-doing"></div></div>
       <div class="col" data-s="done"><h3>Done <em id="n-done">0</em></h3><div class="list" id="l-done"></div></div>
+    </div>
+  </section>
+
+  <section id="calendar" class="view" hidden>
+    <div class="panel">
+      <div class="row cal-h"><button class="btn ghost" id="calPrev" aria-label="Previous month">&lt;</button><h2 id="calTitle"></h2><button class="btn ghost" id="calNext" aria-label="Next month">&gt;</button></div>
+      <div class="cal" id="calGrid"></div>
+      <p class="mu">Click a day to add a task on that date. Click a task to edit it.</p>
+    </div>
+  </section>
+
+  <section id="matrix" class="view" hidden>
+    <div class="quad">
+      <div class="panel"><h3>Do now</h3><p class="mu">Due within a day, medium or high priority</p><div id="q-now"></div></div>
+      <div class="panel"><h3>Plan it</h3><p class="mu">Not urgent, medium or high priority</p><div id="q-plan"></div></div>
+      <div class="panel"><h3>Squeeze in</h3><p class="mu">Due within a day, low priority</p><div id="q-sq"></div></div>
+      <div class="panel"><h3>Maybe later</h3><p class="mu">Not urgent, low priority</p><div id="q-later"></div></div>
     </div>
   </section>
 
@@ -114,6 +133,20 @@
     </div>
   </section>
 </main>
+
+<dialog id="edit"><form id="editForm">
+  <h2>Edit task</h2>
+  <label>Title<input id="eTitle" maxlength="140" required></label>
+  <div class="row"><label>Due date<input type="date" id="eDue"></label>
+  <label>Priority<select id="ePri"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></label></div>
+  <div class="row"><label>Estimate (minutes)<input type="number" id="eEst" min="0"></label>
+  <label>Repeat<select id="eRep"><option value="">Never</option><option value="daily">Daily</option><option value="weekly">Weekly</option></select></label></div>
+  <label>Tag<input id="eTag" maxlength="20"></label>
+  <label>Notes<textarea id="eNote" rows="2"></textarea></label>
+  <b>Subtasks</b><div id="eSubs"></div>
+  <div class="row"><input id="eSubIn" placeholder="Add a subtask"><button type="button" class="btn ghost" id="eSubAdd">Add</button></div>
+  <div class="row c"><button class="btn">Save</button><button type="button" class="btn ghost" id="eClose">Cancel</button></div>
+</form></dialog>
 
 <dialog id="calm"><div class="center">
   <h2>Take a break</h2><p class="mu">Breathe for a minute, then get back to it.</p>

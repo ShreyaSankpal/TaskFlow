@@ -3,13 +3,13 @@ const KEY='taskflow.v2';
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const today=()=>iso(new Date());
 const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return iso(d)};
-let S=JSON.parse(localStorage.getItem(KEY)||'null')||{tasks:[],focus:{},goal:3,habits:[{n:'Study Maths',d:[]},{n:'Exercise',d:[]}],reviews:[],dark:false};
+let S=JSON.parse(localStorage.getItem(KEY)||'null')||{tasks:[],focus:{},goal:3,habits:[{n:'Study DSA',d:[]},{n:'Exercise',d:[]}],reviews:[],dark:false};
 const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=m=>m>=60?Math.floor(m/60)+'h'+(m%60?' '+m%60+'m':''):m+'m';
 const icons=()=>window.lucide&&lucide.createIcons();
 
-/* quick add: "Study Maths tomorrow 2h !high #study" */
+/* quick add: "Study DSA tomorrow 2h !high #study" */
 function parse(t){
   const o={pri:'medium',due:'',est:0,tag:''};
   t=t.replace(/!(high|medium|med|low)\b/i,(m,p)=>{p=p.toLowerCase();o.pri=p[0]=='h'?'high':p[0]=='l'?'low':'medium';return ''});
@@ -27,7 +27,10 @@ function parse(t){
   return o;
 }
 
-const setStatus=(t,s)=>{t.status=s;if(s=='done')t.doneAt=today();else delete t.doneAt};
+const plus=(d,n)=>{const x=new Date(d+'T00:00');x.setDate(x.getDate()+n);return iso(x)};
+const setStatus=(t,s)=>{
+  if(s=='done'&&t.status!='done'&&t.rep)S.tasks.unshift({...t,id:Date.now(),status:'todo',due:plus(t.due||today(),t.rep=='daily'?1:7),focus:0,doneAt:undefined,subs:(t.subs||[]).map(x=>({...x,d:false}))});
+  t.status=s;if(s=='done')t.doneAt=today();else delete t.doneAt};
 /* board */
 const tagCls=t=>'c'+([...t].reduce((a,c)=>a+c.charCodeAt(0),0)%5);
 function dueChip(t){
@@ -40,7 +43,7 @@ function card(t){
   return `<div class="card p-${t.pri}${t.status=='done'?' fin':''}" draggable="true" data-id="${t.id}">
   <div class="chips">${t.tag?`<span class="chip ${tagCls(t.tag)}">${esc(t.tag)}</span>`:''}<span class="chip c${{high:0,medium:3,low:1}[t.pri]}">${t.pri}</span>${dueChip(t)}</div>
   <h4>${esc(t.title)}</h4>
-  <div class="meta">${t.est?`<span><i data-lucide="clock"></i>${fmt(t.est)}</span>`:''}${t.focus?`<span><i data-lucide="timer"></i>${fmt(t.focus)} focused</span>`:''}</div>
+  <div class="meta">${t.est?`<span><i data-lucide="clock"></i>${fmt(t.est)}</span>`:''}${t.subs&&t.subs.length?`<span><i data-lucide="list-checks"></i>${t.subs.filter(s=>s.d).length}/${t.subs.length}</span>`:''}${t.rep?`<span><i data-lucide="repeat"></i>${t.rep}</span>`:''}${t.focus?`<span><i data-lucide="timer"></i>${fmt(t.focus)} focused</span>`:''}</div>
   <div class="acts"><button data-a="focus" title="Focus on this"><i data-lucide="play"></i></button><button data-a="done" title="Mark done"><i data-lucide="check"></i></button><button data-a="edit" title="Rename"><i data-lucide="pencil"></i></button><button data-a="del" title="Delete"><i data-lucide="trash-2"></i></button></div></div>`;
 }
 function streak(){
@@ -67,6 +70,7 @@ function render(){
   $('#warn').hidden=est<=S.goal*60;
   $('#warn').textContent=`Your open tasks add up to ${fmt(est)}, more than your ${S.goal}h daily goal. Consider moving something to another day.`;
   $('#goalIn').value=S.goal;
+  if(!$('#calendar').hidden)cal();if(!$('#matrix').hidden)matrix();
   $('#fmBtn').textContent=S.fm?'Show all':'Focus mode';
   save();icons();
 }
@@ -76,8 +80,8 @@ $('#board').addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b)return;
   const t=S.tasks.find(x=>x.id==b.closest('.card').dataset.id),a=b.dataset.a;
   if(a=='done')setStatus(t,t.status=='done'?'todo':'done');
-  if(a=='del')S.tasks=S.tasks.filter(x=>x!==t);
-  if(a=='edit'){const n=prompt('Rename task',t.title);if(n&&n.trim())t.title=n.trim()}
+  if(a=='del'){const i=S.tasks.indexOf(t);S.tasks.splice(i,1);toast('Task deleted','Undo',()=>{S.tasks.splice(i,0,t);render()})}
+  if(a=='edit'){openEdit(t);return}
   if(a=='focus'){if(t.status!='doing')setStatus(t,'doing');T.task=t.id;view('focus');setMode(T.len,true);startT()}
   render();
 });
@@ -92,8 +96,8 @@ $$('.col').forEach(c=>{
 function view(v){
   $$('.view').forEach(s=>s.hidden=s.id!=v);
   $$('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.v==v));
-  $('#hello').textContent={board:'Tasks',focus:'Focus',review:'Review',habits:'Habits',chat:'Assistant',progress:'Progress'}[v];
-  if(v=='progress')progress();
+  $('#hello').textContent={board:'Tasks',focus:'Focus',review:'Review',habits:'Habits',chat:'Assistant',progress:'Progress',calendar:'Calendar',matrix:'Priorities'}[v];
+  if(v=='progress')progress();if(v=='calendar')cal();if(v=='matrix')matrix();
 }
 $$('#nav a').forEach(a=>a.onclick=()=>view(a.dataset.v));
 
@@ -156,6 +160,53 @@ document.addEventListener('keydown',e=>{
   if(e.key=='n'){e.preventDefault();view('board');$('#quick').focus()}
   if(e.key=='/'){e.preventDefault();view('board');$('#search').focus()}
 });
+
+/* edit dialog: notes, subtasks, repeat */
+let E=null,ES=[];
+function openEdit(t){E=t;ES=(t.subs||[]).map(s=>({...s}));
+  $('#eTitle').value=t.title;$('#eDue').value=t.due||'';$('#ePri').value=t.pri;$('#eEst').value=t.est||'';
+  $('#eRep').value=t.rep||'';$('#eTag').value=t.tag||'';$('#eNote').value=t.notes||'';subsDraw();$('#edit').showModal()}
+function subsDraw(){$('#eSubs').innerHTML=ES.map((s,i)=>`<div class="sub"><input type="checkbox" data-i="${i}" ${s.d?'checked':''}><span>${esc(s.t)}</span><button type="button" data-x="${i}" aria-label="Remove">&times;</button></div>`).join('')}
+$('#eSubs').onclick=e=>{const x=e.target.closest('[data-x]');if(x){ES.splice(+x.dataset.x,1);subsDraw()}};
+$('#eSubs').onchange=e=>{const i=e.target.dataset.i;if(i!=null)ES[i].d=e.target.checked};
+$('#eSubAdd').onclick=()=>{const v=$('#eSubIn').value.trim();if(v){ES.push({t:v,d:false});$('#eSubIn').value='';subsDraw()}};
+$('#eSubIn').onkeydown=e=>{if(e.key=='Enter'){e.preventDefault();$('#eSubAdd').click()}};
+$('#eClose').onclick=()=>$('#edit').close();
+$('#editForm').onsubmit=e=>{e.preventDefault();
+  Object.assign(E,{title:$('#eTitle').value.trim()||E.title,due:$('#eDue').value,pri:$('#ePri').value,est:+$('#eEst').value||0,rep:$('#eRep').value,tag:$('#eTag').value.trim().replace(/\s/g,''),notes:$('#eNote').value,subs:ES});
+  $('#edit').close();render()};
+
+/* undo toast */
+function toast(msg,btn,fn){let el=$('#toast');if(!el){el=document.createElement('div');el.id='toast';document.body.append(el)}
+  el.innerHTML=`<span>${msg}</span><button>${btn}</button>`;el.classList.add('show');
+  el.querySelector('button').onclick=()=>{fn();el.classList.remove('show')};
+  clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),5000)}
+
+/* calendar */
+let cm=new Date();cm.setDate(1);
+function cal(){
+  const y=cm.getFullYear(),m=cm.getMonth(),off=new Date(y,m,1).getDay(),n=new Date(y,m+1,0).getDate();
+  $('#calTitle').textContent=cm.toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  let h=['S','M','T','W','T','F','S'].map(d=>`<b class="dh">${d}</b>`).join('')+'<div class="cd off"></div>'.repeat(off);
+  for(let d=1;d<=n;d++){const ds=iso(new Date(y,m,d)),ts=S.tasks.filter(t=>t.due==ds);
+    h+=`<div class="cd${ds==today()?' now':''}" data-d="${ds}"><span>${d}</span>${ts.slice(0,3).map(t=>`<em class="p-${t.pri}${t.status=='done'?' fin':''}" data-id="${t.id}">${esc(t.title)}</em>`).join('')}${ts.length>3?`<small>+${ts.length-3} more</small>`:''}</div>`}
+  $('#calGrid').innerHTML=h;
+}
+$('#calPrev').onclick=()=>{cm.setMonth(cm.getMonth()-1);cal()};
+$('#calNext').onclick=()=>{cm.setMonth(cm.getMonth()+1);cal()};
+$('#calGrid').onclick=e=>{
+  const em=e.target.closest('em');if(em){openEdit(S.tasks.find(t=>t.id==em.dataset.id));return}
+  const c=e.target.closest('.cd[data-d]');if(!c)return;
+  const n=prompt('New task for '+c.dataset.d);if(!n||!n.trim())return;
+  const o=parse(n);o.due=o.due||c.dataset.d;S.tasks.unshift({id:Date.now(),status:'todo',focus:0,...o});render();cal()};
+
+/* priorities (Eisenhower) */
+function matrix(){
+  const open=S.tasks.filter(t=>t.status!='done'),u=t=>t.due&&t.due<=addDays(1),im=t=>t.pri!='low';
+  const q={now:t=>u(t)&&im(t),plan:t=>!u(t)&&im(t),sq:t=>u(t)&&!im(t),later:t=>!u(t)&&!im(t)};
+  for(const k in q)$('#q-'+k).innerHTML=open.filter(q[k]).map(t=>`<em class="p-${t.pri}" data-id="${t.id}">${esc(t.title)}</em>`).join('')||'<p class="empty">Nothing here.</p>';
+}
+$('#matrix').onclick=e=>{const em=e.target.closest('em');if(em)openEdit(S.tasks.find(t=>t.id==em.dataset.id))};
 
 /* progress */
 function progress(){

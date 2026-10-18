@@ -106,3 +106,21 @@ main{margin-left:0;padding:20px 16px 100px}.top{flex-direction:column;align-item
 .heat .l1{background:#ffd3df}.heat .l2{background:#ff9db8}.heat .l3{background:#ff6b93}.heat .l4{background:var(--ac)}
 .top .row{align-items:center}
 @media(max-width:1000px){.stats.p4{grid-template-columns:1fr 1fr}}
+
+/* calendar, priorities, edit, toast */
+.cal-h{justify-content:space-between;align-items:center;margin-bottom:12px}.cal-h h2{margin:0}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px}
+.dh{text-align:center;color:var(--mu);font-size:13px}
+.cd{min-height:96px;border:1px solid var(--bd);border-radius:12px;padding:6px;cursor:pointer;display:flex;flex-direction:column;gap:3px;overflow:hidden}
+.cd:hover{border-color:var(--ac)}.cd.off{border:0;cursor:default}.cd.now{background:rgba(255,77,126,.08);border-color:var(--ac)}
+.cd>span{font-weight:700;font-size:13px}.cd small{color:var(--mu);font-size:12px}
+em.p-high,em.p-medium,em.p-low{display:block;font-style:normal;font-size:12.5px;font-weight:600;padding:2px 7px;border-radius:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;margin-bottom:6px;border-left:3px solid}
+em.p-high{background:#ffe4e4;color:#b42323;border-color:#ff4d4d}em.p-medium{background:#ffefd9;color:#9a5600;border-color:#ffa23a}em.p-low{background:#dff6ec;color:#17794a;border-color:#4dc79a}
+em.fin{text-decoration:line-through;opacity:.6}
+.quad{display:grid;grid-template-columns:1fr 1fr;gap:20px}.quad h3{font-size:18px}.quad .mu{font-size:14px;margin-bottom:12px}
+#edit{width:min(520px,94vw);max-height:92vh;overflow:auto}
+.sub{display:flex;align-items:center;gap:10px;padding:6px 0}.sub input{width:auto}.sub span{flex:1}
+.sub button{border:0;background:none;font-size:20px;color:var(--mu)}
+#toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,120px);background:var(--tx);color:var(--bg);padding:12px 18px;border-radius:14px;display:flex;gap:16px;align-items:center;font-weight:600;transition:.25s;z-index:50}
+#toast.show{transform:translate(-50%,0)}#toast button{background:none;border:0;color:var(--ac);font-weight:800}
+@media(max-width:800px){#nav{overflow-x:auto}#nav a{min-width:62px}.quad{grid-template-columns:1fr}.cd{min-height:64px}.cd em{display:none}}
