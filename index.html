@@ -4,283 +4,292 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f7f7fb">
-  <title>TaskFlow — Your Personal Productivity Companion</title>
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="TaskFlow — plan your day, manage tasks, and build better focus habits.">
+  <title>TaskFlow — Personal Productivity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="star.js" defer></script>
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <a href="#" class="brand">
-        <span class="brand-mark">T</span>
-        <span>TaskFlow</span>
-      </a>
+<div class="app-shell">
 
-      <p class="nav-label">WORKSPACE</p>
-      <nav class="navigation">
-        <a class="nav-link active" href="#overview">▦ <span>Overview</span></a>
-        <a class="nav-link" href="#tasks">✓ <span>My tasks</span></a>
-        <a class="nav-link" href="#focus">◷ <span>Focus room</span></a>
-        <a class="nav-link" href="#reflection">♡ <span>Daily reflection</span></a>
-        <a class="nav-link" href="#reports">▥ <span>Reports</span></a>
-      </nav>
+  <aside class="sidebar">
+    <a href="#overview" class="brand">
+      <span class="brand-mark">T</span>
+      <span>TaskFlow</span>
+    </a>
 
-      <div class="sidebar-bottom">
-        <div class="support-card">
-          <span class="support-icon">✳</span>
-          <h3>Take a breath.</h3>
-          <p>You don't have to do everything at once.</p>
-          <button class="button button-light button-full" id="frustrationBtn">
-            I need a moment
-          </button>
-        </div>
-        <p class="sidebar-footer">Progress over perfection.</p>
+    <p class="nav-label">WORKSPACE</p>
+    <nav class="navigation" aria-label="Main navigation">
+      <a class="nav-link active" href="#overview" aria-current="page"><span class="nav-icon">▦</span><span>Overview</span></a>
+      <a class="nav-link" href="#tasks"><span class="nav-icon">☑</span><span>My tasks</span></a>
+      <a class="nav-link" href="#focus"><span class="nav-icon">◷</span><span>Focus room</span></a>
+      <a class="nav-link" href="#reflection"><span class="nav-icon">♡</span><span>Daily review</span></a>
+      <a class="nav-link" href="#reports"><span class="nav-icon">▤</span><span>Reports</span></a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="support-card">
+        <span class="support-icon">✳</span>
+        <h3>Take a breather</h3>
+        <p>Productivity isn't about doing everything. It's about what matters.</p>
+        <button class="button button-light button-full" id="frustrationBtn" type="button">Take a moment <span>↗</span></button>
       </div>
-    </aside>
+      <p class="sidebar-footer">Made for progress, not perfection.</p>
+    </div>
+  </aside>
 
-    <main class="main-content" id="overview">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow" id="todayLabel">YOUR PERSONAL WORKSPACE</p>
-          <h1 id="greeting">Let's make today count.</h1>
-        </div>
+  <main class="main-content" id="overview">
+
+    <header class="topbar">
+      <div class="topbar-heading">
+        <p class="eyebrow" id="todayLabel">YOUR PERSONAL WORKSPACE</p>
+        <h1 id="greeting">Let's make today count.</h1>
+        <p class="page-subtitle">A little progress every day adds up.</p>
+      </div>
+      <div class="topbar-actions">
         <div class="date-control">
           <label for="selectedDate">Planning date</label>
           <input type="date" id="selectedDate">
         </div>
-      </header>
+      </div>
+    </header>
 
-      <section class="briefing panel">
-        <div class="briefing-copy">
-          <span class="section-kicker">YOUR DAILY BRIEFING</span>
-          <h2 id="briefingTitle">A fresh day. A realistic plan.</h2>
-          <p id="briefingText">Choose your priorities, focus on what matters, and leave room for life.</p>
-          <button class="button button-primary" id="generateBriefingBtn">
-            Review my priorities →
-          </button>
+    <section class="briefing panel">
+      <div class="briefing-copy">
+        <span class="section-kicker">YOUR DAILY BRIEFING</span>
+        <h2 id="briefingTitle">A fresh day. A realistic plan.</h2>
+        <p id="briefingText">Choose your priorities, focus on what matters, and leave room for life.</p>
+        <button class="button button-primary" id="generateBriefingBtn" type="button">Review my priorities <span>→</span></button>
+      </div>
+      <div class="briefing-art" aria-hidden="true">
+        <div class="art-circle art-circle-one"></div>
+        <div class="art-circle art-circle-two"></div>
+        <div class="art-checklist">
+          <div class="art-check art-check-done">✓</div>
+          <div class="art-line"></div>
+          <div class="art-check"> </div>
+          <div class="art-line art-line-short"></div>
+          <div class="art-check"> </div>
+          <div class="art-line"></div>
         </div>
-        <div class="briefing-symbol" aria-hidden="true">✳</div>
-      </section>
+      </div>
+    </section>
 
-      <section class="stats-grid">
-        <article class="stat-card panel">
-          <span class="stat-label">Tasks completed</span>
-          <div class="stat-value" id="completedCount">0 / 0</div>
-          <p class="stat-note">Small steps still count.</p>
-        </article>
-        <article class="stat-card panel">
-          <span class="stat-label">Focused today</span>
-          <div class="stat-value" id="focusedToday">0m</div>
-          <p class="stat-note">Time spent doing the work.</p>
-        </article>
-        <article class="stat-card panel">
-          <span class="stat-label">Daily goal</span>
-          <div class="stat-value" id="goalProgress">0%</div>
-          <p class="stat-note" id="goalProgressNote">Set your target below.</p>
-        </article>
-      </section>
+    <section class="stats-grid" aria-label="Daily statistics">
+      <article class="stat-card panel">
+        <div class="stat-top"><span class="stat-label">Tasks completed</span><span class="stat-icon stat-icon-blue">✓</span></div>
+        <div class="stat-value" id="completedCount">0 / 0</div>
+        <p class="stat-note">Small steps still count.</p>
+      </article>
+      <article class="stat-card panel">
+        <div class="stat-top"><span class="stat-label">Focused today</span><span class="stat-icon stat-icon-purple">◷</span></div>
+        <div class="stat-value" id="focusedToday">0m</div>
+        <p class="stat-note">Time spent doing the work.</p>
+      </article>
+      <article class="stat-card panel">
+        <div class="stat-top"><span class="stat-label">Daily goal</span><span class="stat-icon stat-icon-green">↗</span></div>
+        <div class="stat-value" id="goalProgress">0%</div>
+        <p class="stat-note" id="goalProgressNote">Set your target below.</p>
+      </article>
+    </section>
 
-      <section class="content-grid">
-        <div class="main-column">
-          <section class="panel section-panel" id="tasks">
-            <div class="section-heading">
-              <div>
-                <span class="section-kicker">MAKE IT HAPPEN</span>
-                <h2>Today's tasks</h2>
-              </div>
-              <span class="count-pill" id="taskCount">0 tasks</span>
+    <section class="content-grid">
+      <div class="main-column">
+
+        <section class="panel section-panel" id="tasks">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">YOUR WORKSPACE</span>
+              <h2>Today's tasks</h2>
+              <p class="section-description">Keep your priorities clear and manageable.</p>
             </div>
+            <span class="count-pill" id="taskCount">0 tasks</span>
+          </div>
 
-            <form id="taskForm" class="task-form">
-              <label class="sr-only" for="taskTitle">Task name</label>
-              <input id="taskTitle" type="text" placeholder="What do you want to accomplish?" maxlength="120" required>
-              <div class="form-row">
-                <select id="taskPriority" aria-label="Task priority">
-                  <option value="medium">Medium priority</option>
-                  <option value="high">High priority</option>
-                  <option value="low">Low priority</option>
-                </select>
-                <input type="date" id="taskDueDate" aria-label="Task due date">
-                <button class="button button-primary" type="submit">+ Add task</button>
-              </div>
-            </form>
-
-            <div class="task-filters" aria-label="Filter tasks">
-              <button class="filter-btn active" data-filter="all" type="button">All</button>
-              <button class="filter-btn" data-filter="active" type="button">To do</button>
-              <button class="filter-btn" data-filter="completed" type="button">Completed</button>
+          <form id="taskForm" class="task-form">
+            <label class="sr-only" for="taskTitle">Task name</label>
+            <div class="task-input-wrap"><span aria-hidden="true">＋</span><input id="taskTitle" type="text" placeholder="Add a task you want to accomplish..." maxlength="120" required></div>
+            <div class="form-row">
+              <select id="taskPriority" aria-label="Task priority">
+                <option value="medium">Medium priority</option>
+                <option value="high">High priority</option>
+                <option value="low">Low priority</option>
+              </select>
+              <input type="date" id="taskDueDate" aria-label="Task due date">
+              <button class="button button-primary" type="submit">+ Add task</button>
             </div>
-            <div id="taskList" class="task-list"></div>
-            <p id="emptyTasks" class="empty-state">Your list is clear. Add a task to get started.</p>
-          </section>
+          </form>
 
-          <section class="panel section-panel" id="focus">
-            <div class="section-heading">
-              <div>
-                <span class="section-kicker">ONE THING AT A TIME</span>
-                <h2>Focus room</h2>
-              </div>
-              <span class="status-pill"><span class="status-dot"></span> Your time</span>
+          <div class="task-filters" aria-label="Filter tasks">
+            <button class="filter-btn active" data-filter="all" type="button">All tasks</button>
+            <button class="filter-btn" data-filter="active" type="button">To do</button>
+            <button class="filter-btn" data-filter="completed" type="button">Completed</button>
+          </div>
+          <div id="taskList" class="task-list"></div>
+          <p id="emptyTasks" class="empty-state">Your list is clear. Add a task to get started.</p>
+        </section>
+
+        <section class="panel section-panel" id="focus">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">PROTECT YOUR ATTENTION</span>
+              <h2>Focus room</h2>
+              <p class="section-description">One thing at a time. Give it your full attention.</p>
             </div>
+            <span class="status-pill"><span class="status-dot"></span> Your time</span>
+          </div>
 
-            <div class="timer-modes">
-              <button type="button" class="timer-mode active" data-minutes="25">25 min focus</button>
-              <button type="button" class="timer-mode" data-minutes="30">30 min focus</button>
-              <button type="button" class="timer-mode" data-minutes="5">5 min break</button>
-            </div>
+          <div class="timer-modes">
+            <button type="button" class="timer-mode active" data-minutes="25">25 min focus</button>
+            <button type="button" class="timer-mode" data-minutes="30">30 min focus</button>
+            <button type="button" class="timer-mode" data-minutes="5">5 min break</button>
+          </div>
 
-            <div class="timer-face">
-              <div class="timer-ring">
+          <div class="timer-face">
+            <div class="timer-ring">
+              <div class="timer-ring-inner">
                 <span id="timerDisplay">25:00</span>
                 <span class="timer-caption" id="timerCaption">READY WHEN YOU ARE</span>
               </div>
             </div>
-            <div class="timer-actions">
-              <button class="button button-primary" id="startTimerBtn" type="button">Start focus</button>
-              <button class="button button-secondary" id="resetTimerBtn" type="button">Reset</button>
+          </div>
+          <div class="timer-actions">
+            <button class="button button-primary" id="startTimerBtn" type="button">Start focus</button>
+            <button class="button button-light" id="resetTimerBtn" type="button">Reset timer</button>
+          </div>
+          <p class="muted center" id="timerMessage">Choose a session and give yourself permission to focus.</p>
+        </section>
+
+        <section class="panel section-panel" id="reflection">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">A MOMENT TO REFLECT</span>
+              <h2>Your daily review</h2>
+              <p class="section-description">Learn from your day without judging yourself.</p>
             </div>
-            <p class="muted center" id="timerMessage">Choose a session and give yourself permission to focus.</p>
-          </section>
+            <span class="reflection-icon">♡</span>
+          </div>
 
-          <section class="panel section-panel" id="reflection">
-            <div class="section-heading">
-              <div>
-                <span class="section-kicker">NO JUDGMENT, JUST LEARNING</span>
-                <h2>Your daily review</h2>
-              </div>
-              <span class="section-emoji">♡</span>
-            </div>
+          <p class="muted">How much focused work did you plan for this day?</p>
+          <div class="goal-inputs">
+            <label>Planned hours<input type="number" id="plannedHours" min="0" max="24" step="0.25" value="3"></label>
+            <label>Hours completed<input type="number" id="actualHours" min="0" max="24" step="0.25" value="0"></label>
+          </div>
 
-            <p class="muted">How much focused work did you plan for this day?</p>
-            <div class="goal-inputs">
-              <label>
-                Planned hours
-                <input type="number" id="plannedHours" min="0" max="24" step="0.25" value="3">
-              </label>
-              <label>
-                Hours completed
-                <input type="number" id="actualHours" min="0" max="24" step="0.25" value="0">
-              </label>
-            </div>
+          <div class="goal-summary" id="reviewSummary">Every bit of progress is worth recognizing.</div>
 
-            <div class="goal-summary" id="reviewSummary">
-              Every bit of progress is worth recognizing.
-            </div>
+          <label class="field-label" for="reflectionCategory">What got in the way, if anything?</label>
+          <select id="reflectionCategory">
+            <option value="">Choose a reason (optional)</option>
+            <option value="Distractions">Phone or other distractions</option>
+            <option value="Low energy">Low energy or tiredness</option>
+            <option value="Unexpected work">Unexpected work</option>
+            <option value="Planning">Poor planning or work took longer</option>
+            <option value="Personal">Personal responsibilities</option>
+            <option value="No obstacle">Nothing major — I made progress</option>
+            <option value="Other">Something else</option>
+          </select>
 
-            <label class="field-label" for="reflectionCategory">What got in the way, if anything?</label>
-            <select id="reflectionCategory">
-              <option value="">Choose a reason (optional)</option>
-              <option value="Distractions">Phone or other distractions</option>
-              <option value="Low energy">Low energy or tiredness</option>
-              <option value="Unexpected work">Unexpected work</option>
-              <option value="Planning">Poor planning or work took longer</option>
-              <option value="Personal">Personal responsibilities</option>
-              <option value="No obstacle">Nothing major — I made progress</option>
-              <option value="Other">Something else</option>
-            </select>
+          <label class="field-label" for="reflectionText">Tell us a little more</label>
+          <textarea id="reflectionText" rows="3" maxlength="1000" placeholder="What happened today? What would you like to remember?"></textarea>
+          <div class="reflection-actions">
+            <button class="button button-light" id="voiceBtn" type="button">🎙 Speak</button>
+            <button class="button button-primary" id="saveReflectionBtn" type="button">Save daily review</button>
+          </div>
+          <p class="muted small" id="reflectionMessage">Your review stays in this browser in this prototype.</p>
 
-            <label class="field-label" for="reflectionText">Tell us a little more</label>
-            <textarea id="reflectionText" rows="3" maxlength="1000" placeholder="Write what happened. You can also use your microphone if your browser supports voice input."></textarea>
-            <div class="reflection-actions">
-              <button class="button button-secondary" id="voiceBtn" type="button">🎙 Speak</button>
-              <button class="button button-primary" id="saveReflectionBtn" type="button">Save daily review</button>
-            </div>
-            <p class="muted small" id="reflectionMessage">Your review stays in this browser in this prototype.</p>
+          <div class="unplanned-box">
+            <h3>Something good we didn't plan?</h3>
+            <p class="muted">Did you do something important that wasn't on your task list?</p>
+            <textarea id="unplannedWin" rows="2" maxlength="500" placeholder="An unexpected achievement, big or small..."></textarea>
+            <button class="button button-secondary" id="saveWinBtn" type="button">Save my win</button>
+          </div>
+        </section>
+      </div>
 
-            <div class="unplanned-box">
-              <h3>Something good we didn't plan?</h3>
-              <p class="muted">Did you do something important that wasn't on your task list?</p>
-              <textarea id="unplannedWin" rows="2" maxlength="500" placeholder="An unexpected achievement, big or small..."></textarea>
-              <button class="button button-secondary" id="saveWinBtn" type="button">Save my win</button>
-            </div>
-          </section>
-        </div>
+      <aside class="side-column">
+        <section class="panel section-panel">
+          <span class="section-kicker">YOUR DAILY TARGET</span>
+          <h2>Make time for what matters.</h2>
+          <p class="section-description">Set a goal that works for your day.</p>
+          <label class="field-label" for="dailyGoalHours">Focused hours per day</label>
+          <div class="goal-setting-row">
+            <input type="number" id="dailyGoalHours" min="0.25" max="24" step="0.25" value="3">
+            <button class="button button-secondary" id="saveGoalBtn" type="button">Save</button>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="goalProgressBar"></div></div>
+          <p class="muted small" id="goalDetail">Every focused minute moves you forward.</p>
+        </section>
 
-        <aside class="side-column">
-          <section class="panel section-panel">
-            <span class="section-kicker">YOUR DAILY TARGET</span>
-            <h2>Make time for what matters.</h2>
-            <label class="field-label" for="dailyGoalHours">Focused hours per day</label>
-            <div class="goal-setting-row">
-              <input type="number" id="dailyGoalHours" min="0.25" max="24" step="0.25" value="3">
-              <button class="button button-secondary" id="saveGoalBtn" type="button">Save</button>
-            </div>
-            <div class="progress-track"><div class="progress-fill" id="goalProgressBar"></div></div>
-            <p class="muted small" id="goalDetail">Every focused minute moves you forward.</p>
-          </section>
+        <section class="panel section-panel encouragement-card">
+          <span class="section-kicker">A GENTLE REMINDER</span>
+          <div class="quote-mark">“</div>
+          <p class="encouragement" id="encouragementText">You don't need a perfect day to make meaningful progress.</p>
+          <p class="muted small">Consistency grows one step at a time.</p>
+        </section>
 
-          <section class="panel section-panel">
-            <span class="section-kicker">A GENTLE REMINDER</span>
-            <div class="quote-mark">“</div>
-            <p class="encouragement" id="encouragementText">You don't need a perfect day to make meaningful progress.</p>
-            <p class="muted small">Consistency grows one step at a time.</p>
-          </section>
+        <section class="panel section-panel" id="reports">
+          <div class="section-heading">
+            <div><span class="section-kicker">YOUR PROGRESS</span><h2>Reports</h2></div>
+          </div>
+          <label class="field-label" for="reportRange">Review period</label>
+          <select id="reportRange">
+            <option value="7">Past 7 days</option>
+            <option value="14">Past 14 days</option>
+            <option value="30">Past 30 days</option>
+          </select>
+          <div class="report-metrics">
+            <div><span>Focus time</span><strong id="reportFocus">0m</strong></div>
+            <div><span>Tasks completed</span><strong id="reportTasks">0</strong></div>
+            <div><span>Reviews saved</span><strong id="reportReviews">0</strong></div>
+          </div>
+          <div id="reportInsight" class="insight-box">Your report will grow as you use TaskFlow.</div>
+          <div class="weekly-appreciation" id="weeklyAppreciation">
+            <span class="section-kicker">WEEKLY APPRECIATION</span>
+            <h3>Every effort counts.</h3>
+            <p class="muted small">Your weekly celebration will use your actual saved progress.</p>
+          </div>
+        </section>
 
-          <section class="panel section-panel" id="reports">
-            <div class="section-heading">
-              <div>
-                <span class="section-kicker">LOOKING BACK</span>
-                <h2>Your reports</h2>
-              </div>
-            </div>
-            <label class="field-label" for="reportRange">Review period</label>
-            <select id="reportRange">
-              <option value="7">Past 7 days</option>
-              <option value="14">Past 14 days</option>
-              <option value="30">Past 30 days</option>
-            </select>
-            <div class="report-metrics">
-              <div><span>Focus time</span><strong id="reportFocus">0m</strong></div>
-              <div><span>Tasks completed</span><strong id="reportTasks">0</strong></div>
-              <div><span>Reviews saved</span><strong id="reportReviews">0</strong></div>
-            </div>
-            <div id="reportInsight" class="insight-box">Your report will grow as you use TaskFlow.</div>
-            <div class="weekly-appreciation" id="weeklyAppreciation">
-              <span class="section-kicker">YOUR WEEKLY APPRECIATION</span>
-              <h3>Every effort counts.</h3>
-              <p class="muted small">Your weekly celebration will use your actual saved progress.</p>
-            </div>
-          </section>
+        <section class="panel section-panel companion-card">
+          <span class="section-kicker">YOUR PERSONAL COMPANION</span>
+          <h2>Talk it out.</h2>
+          <p class="muted">Feeling stuck? Let's find one manageable next step.</p>
+          <div id="chatMessages" class="chat-messages" aria-live="polite">
+            <div class="chat-bubble assistant-bubble">I'm here to help you think through a difficult moment. What's going on?</div>
+          </div>
+          <form id="chatForm" class="chat-form">
+            <label class="sr-only" for="chatInput">Message TaskFlow</label>
+            <input id="chatInput" type="text" maxlength="500" placeholder="Tell me what's going on..." required>
+            <button class="button button-primary" type="submit" aria-label="Send message">↑</button>
+          </form>
+          <p class="muted tiny">Your space to think, plan, and take the next step.</p>
+        </section>
+      </aside>
+    </section>
 
-          <section class="panel section-panel companion-card">
-            <span class="section-kicker">HERE FOR YOU</span>
-            <h2>Talk it out.</h2>
-            <p class="muted">Feeling stuck? Write what's on your mind. Let's find one manageable next step.</p>
+    <footer class="page-footer">
+      <span class="footer-brand"><span class="brand-mark">T</span> TaskFlow</span>
+      <span>Plan with care. Progress with purpose.</span>
+    </footer>
+  </main>
+</div>
 
-            <div id="chatMessages" class="chat-messages" aria-live="polite">
-              <div class="chat-bubble assistant-bubble">I'm here to help you think through a difficult moment. What's going on?</div>
-            </div>
-
-            <form id="chatForm" class="chat-form">
-              <label class="sr-only" for="chatInput">Message TaskFlow</label>
-              <input id="chatInput" type="text" maxlength="500" placeholder="Tell me what's going on..." required>
-              <button class="button button-primary" type="submit" aria-label="Send message">↑</button>
-            </form>
-
-            <p class="muted tiny">Your space to think, plan, and take the next step.</p>
-          </section>
-        </aside>
-      </section>
-
-      <footer class="page-footer">
-        <span>TaskFlow</span>
-        <span>Plan with care. Progress with purpose.</span>
-      </footer>
-    </main>
+<dialog id="calmDialog" class="calm-dialog">
+  <div class="dialog-content">
+    <button type="button" id="closeCalmBtn" class="dialog-close" aria-label="Close">×</button>
+    <span class="section-kicker">PAUSE WITHOUT GUILT</span>
+    <h2>Let's take a moment.</h2>
+    <p class="muted">You don't have to solve everything right now.</p>
+    <div class="breathing-circle" id="breathingCircle"><span id="breathingText">Breathe in</span></div>
+    <p id="breathingInstruction" class="center muted">Slowly breathe in, then gently breathe out.</p>
+    <button class="button button-primary button-full" id="startBreathingBtn" type="button">Start breathing exercise</button>
+    <button class="button button-secondary button-full" id="reflectAfterCalmBtn" type="button">Write what's frustrating me</button>
   </div>
-
-  <dialog id="calmDialog" class="calm-dialog">
-    <div class="dialog-content">
-      <button type="button" id="closeCalmBtn" class="dialog-close" aria-label="Close">×</button>
-      <span class="section-kicker">PAUSE WITHOUT GUILT</span>
-      <h2>Let's take a moment.</h2>
-      <p class="muted">You don't have to solve everything right now.</p>
-      <div class="breathing-circle" id="breathingCircle"><span id="breathingText">Breathe in</span></div>
-      <p id="breathingInstruction" class="center muted">Slowly breathe in, then gently breathe out.</p>
-      <button class="button button-primary button-full" id="startBreathingBtn" type="button">Start breathing exercise</button>
-      <button class="button button-secondary button-full" id="reflectAfterCalmBtn" type="button">Write what's frustrating me</button>
-    </div>
-  </dialog>
+</dialog>
 </body>
 </html>
