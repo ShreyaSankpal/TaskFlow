@@ -9,7 +9,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const fmt=m=>m>=60?Math.floor(m/60)+'h'+(m%60?' '+m%60+'m':''):m+'m';
 const icons=()=>window.lucide&&lucide.createIcons();
 
-/* quick add: "Study maths tomorrow 2h !high #study" */
+/* quick add: "Study Maths tomorrow 2h !high #study" */
 function parse(t){
   const o={pri:'medium',due:'',est:0,tag:''};
   t=t.replace(/!(high|medium|med|low)\b/i,(m,p)=>{p=p.toLowerCase();o.pri=p[0]=='h'?'high':p[0]=='l'?'low':'medium';return ''});
@@ -27,6 +27,7 @@ function parse(t){
   return o;
 }
 
+const setStatus=(t,s)=>{t.status=s;if(s=='done')t.doneAt=today();else delete t.doneAt};
 /* board */
 const tagCls=t=>'c'+([...t].reduce((a,c)=>a+c.charCodeAt(0),0)%5);
 function dueChip(t){
@@ -50,7 +51,8 @@ function streak(){
 function render(){
   const q=$('#search').value.toLowerCase();
   ['todo','doing','done'].forEach(s=>{
-    const list=S.tasks.filter(t=>t.status==s&&(t.title+t.tag).toLowerCase().includes(q));
+    let list=S.tasks.filter(t=>t.status==s&&(t.title+t.tag).toLowerCase().includes(q));
+    if(S.fm&&s=='todo')list=list.sort((a,b)=>({high:0,medium:1,low:2}[a.pri]-{high:0,medium:1,low:2}[b.pri])).slice(0,1);
     $('#l-'+s).innerHTML=list.map(card).join('')||`<p class="empty">${s=='todo'?'Nothing here. Add a task above.':'Drag tasks here.'}</p>`;
     $('#n-'+s).textContent=list.length;
   });
@@ -65,6 +67,7 @@ function render(){
   $('#warn').hidden=est<=S.goal*60;
   $('#warn').textContent=`Your open tasks add up to ${fmt(est)}, more than your ${S.goal}h daily goal. Consider moving something to another day.`;
   $('#goalIn').value=S.goal;
+  $('#fmBtn').textContent=S.fm?'Show all':'Focus mode';
   save();icons();
 }
 $('#addForm').onsubmit=e=>{e.preventDefault();const o=parse($('#quick').value);S.tasks.unshift({id:Date.now(),status:'todo',focus:0,...o});$('#quick').value='';render()};
@@ -72,24 +75,25 @@ $('#search').oninput=render;
 $('#board').addEventListener('click',e=>{
   const b=e.target.closest('[data-a]');if(!b)return;
   const t=S.tasks.find(x=>x.id==b.closest('.card').dataset.id),a=b.dataset.a;
-  if(a=='done')t.status=t.status=='done'?'todo':'done';
+  if(a=='done')setStatus(t,t.status=='done'?'todo':'done');
   if(a=='del')S.tasks=S.tasks.filter(x=>x!==t);
   if(a=='edit'){const n=prompt('Rename task',t.title);if(n&&n.trim())t.title=n.trim()}
-  if(a=='focus'){t.status=t.status=='done'?'doing':t.status=='todo'?'doing':t.status;T.task=t.id;view('focus');setMode(T.len,true);startT()}
+  if(a=='focus'){if(t.status!='doing')setStatus(t,'doing');T.task=t.id;view('focus');setMode(T.len,true);startT()}
   render();
 });
 $('#board').addEventListener('dragstart',e=>{const c=e.target.closest('.card');if(c)e.dataTransfer.setData('text',c.dataset.id)});
 $$('.col').forEach(c=>{
   c.ondragover=e=>{e.preventDefault();c.classList.add('over')};
   c.ondragleave=()=>c.classList.remove('over');
-  c.ondrop=e=>{e.preventDefault();c.classList.remove('over');const t=S.tasks.find(x=>x.id==e.dataTransfer.getData('text'));if(t){t.status=c.dataset.s;render()}};
+  c.ondrop=e=>{e.preventDefault();c.classList.remove('over');const t=S.tasks.find(x=>x.id==e.dataTransfer.getData('text'));if(t){setStatus(t,c.dataset.s);render()}};
 });
 
 /* views */
 function view(v){
   $$('.view').forEach(s=>s.hidden=s.id!=v);
   $$('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.v==v));
-  $('#hello').textContent={board:'Tasks',focus:'Focus',review:'Review',habits:'Habits',chat:'Assistant'}[v];
+  $('#hello').textContent={board:'Tasks',focus:'Focus',review:'Review',habits:'Habits',chat:'Assistant',progress:'Progress'}[v];
+  if(v=='progress')progress();
 }
 $$('#nav a').forEach(a=>a.onclick=()=>view(a.dataset.v));
 
@@ -153,6 +157,25 @@ document.addEventListener('keydown',e=>{
   if(e.key=='/'){e.preventDefault();view('board');$('#search').focus()}
 });
 
+/* progress */
+function progress(){
+  const days=[...Array(14)].map((_,i)=>addDays(i-13));
+  const fo=d=>S.focus[d]||0,dn=d=>S.tasks.filter(t=>t.doneAt==d).length;
+  const chart=(id,vals,f)=>{const mx=Math.max(1,...vals);$(id).innerHTML=vals.map((v,i)=>`<div><small>${v?f(v):''}</small><i style="height:${Math.max(4,v/mx*130)}px"></i><small>${new Date(days[i]+'T00:00').getDate()}</small></div>`).join('')};
+  chart('#chFocus',days.map(fo),fmt);chart('#chDone',days.map(dn),v=>v);
+  const tf=days.reduce((a,d)=>a+fo(d),0),act=days.filter(d=>fo(d)||dn(d)).length;
+  $('#pgFocus').textContent=fmt(tf);$('#pgDone').textContent=days.reduce((a,d)=>a+dn(d),0);
+  $('#pgActive').textContent=act+'/14';$('#pgAvg').textContent=fmt(act?Math.round(tf/act):0);
+  const first=addDays(-83);let cells=[...Array(new Date(first+'T00:00').getDay())].map(()=>'<span></span>');
+  for(let i=0;i<84;i++){const d=addDays(i-83),sc=fo(d)/30+dn(d),lv=sc==0?0:sc<1?1:sc<2?2:sc<4?3:4;
+    cells.push(`<span class="l${lv}" title="${d}: ${fmt(fo(d))}, ${dn(d)} done"></span>`)}
+  $('#heat').innerHTML=cells.join('');
+}
+/* backup + focus mode */
+$('#exportBtn').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));a.download='taskflow-backup-'+today()+'.json';a.click()};
+$('#importBtn').onclick=()=>$('#importFile').click();
+$('#importFile').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!Array.isArray(d.tasks))throw 0;S=Object.assign({focus:{},goal:3,habits:[],reviews:[],dark:false},d);save();theme();habs();revs();render();alert('Backup loaded.')}catch(x){alert('That file is not a TaskFlow backup.')}e.target.value=''};
+$('#fmBtn').onclick=()=>{S.fm=!S.fm;render()};
 const h=new Date().getHours();
 $('#dateLbl').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
 theme();draw();habs();revs();render();

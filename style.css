@@ -93,3 +93,16 @@ dialog::backdrop{background:rgba(5,8,25,.6)}
 #nav{display:flex;width:100%;justify-content:space-around}#nav a{flex-direction:column;gap:2px;font-size:11px;padding:6px 8px}#nav a.on::before{display:none}
 main{margin-left:0;padding:20px 16px 100px}.top{flex-direction:column;align-items:stretch}#search{max-width:none}h1{font-size:26px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* progress */
+.stats.p4{grid-template-columns:repeat(4,1fr)}
+.panel.gap{margin-top:20px}
+.chart{display:flex;align-items:flex-end;gap:8px;height:190px}
+.chart>div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;height:100%}
+.chart small{color:var(--mu);font-size:12px;font-weight:600;min-height:16px}
+.chart i{width:100%;background:linear-gradient(var(--ac),#ff9db8);border-radius:8px 8px 0 0}
+.heat{display:grid;grid-template-rows:repeat(7,18px);grid-auto-flow:column;grid-auto-columns:18px;gap:5px;overflow-x:auto;padding-bottom:6px}
+.heat span{border-radius:5px;background:var(--bd)}
+.heat .l1{background:#ffd3df}.heat .l2{background:#ff9db8}.heat .l3{background:#ff6b93}.heat .l4{background:var(--ac)}
+.top .row{align-items:center}
+@media(max-width:1000px){.stats.p4{grid-template-columns:1fr 1fr}}

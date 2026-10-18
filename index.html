@@ -16,10 +16,14 @@
     <a data-v="focus"><i data-lucide="timer"></i>Focus</a>
     <a data-v="review"><i data-lucide="notebook-pen"></i>Review</a>
     <a data-v="habits"><i data-lucide="flame"></i>Habits</a>
+    <a data-v="progress"><i data-lucide="bar-chart-3"></i>Progress</a>
     <a data-v="chat"><i data-lucide="sparkles"></i>Assistant</a>
   </nav>
   <div class="side-b">
     <button id="calmBtn"><i data-lucide="wind"></i>Take a break</button>
+    <button id="exportBtn"><i data-lucide="download"></i>Export backup</button>
+    <button id="importBtn"><i data-lucide="upload"></i>Import backup</button>
+    <input type="file" id="importFile" accept=".json" hidden>
     <button id="themeBtn"><i data-lucide="moon"></i>Dark mode</button>
   </div>
 </aside>
@@ -27,7 +31,7 @@
 <main>
   <header class="top">
     <div><p id="dateLbl"></p><h1 id="hello">Tasks</h1></div>
-    <input id="search" placeholder="Search tasks  ( / )">
+    <div class="row"><button class="btn ghost" id="fmBtn">Focus mode</button><input id="search" placeholder="Search tasks  ( / )"></div>
   </header>
 
   <section id="board" class="view">
@@ -88,6 +92,18 @@
       <form id="habForm" class="add"><input id="habIn" placeholder="New habit, e.g. Read 20 pages" required><button class="btn">Add habit</button></form>
       <div id="habList"></div>
     </div>
+  </section>
+
+  <section id="progress" class="view" hidden>
+    <div class="stats p4">
+      <div class="stat"><span>Focus, 14 days</span><b id="pgFocus">0m</b></div>
+      <div class="stat"><span>Tasks done, 14 days</span><b id="pgDone">0</b></div>
+      <div class="stat"><span>Active days</span><b id="pgActive">0</b></div>
+      <div class="stat"><span>Avg per active day</span><b id="pgAvg">0m</b></div>
+    </div>
+    <div class="panel gap"><h2>Focus time per day</h2><div class="chart" id="chFocus"></div></div>
+    <div class="panel gap"><h2>Tasks completed per day</h2><div class="chart" id="chDone"></div></div>
+    <div class="panel gap"><h2>Activity, last 12 weeks</h2><div class="heat" id="heat"></div></div>
   </section>
 
   <section id="chat" class="view" hidden>
