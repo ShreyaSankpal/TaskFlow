@@ -3,13 +3,13 @@ const KEY='taskflow.v2';
 const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const today=()=>iso(new Date());
 const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return iso(d)};
-let S=JSON.parse(localStorage.getItem(KEY)||'null')||{tasks:[],focus:{},goal:3,habits:[{n:'Study DSA',d:[]},{n:'Exercise',d:[]}],reviews:[],dark:false};
+let S=JSON.parse(localStorage.getItem(KEY)||'null')||{tasks:[],focus:{},goal:3,habits:[{n:'Study Maths',d:[]},{n:'Exercise',d:[]}],reviews:[],dark:false};
 const save=()=>localStorage.setItem(KEY,JSON.stringify(S));
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=m=>m>=60?Math.floor(m/60)+'h'+(m%60?' '+m%60+'m':''):m+'m';
 const icons=()=>window.lucide&&lucide.createIcons();
 
-/* quick add: "Study DSA tomorrow 2h !high #study" */
+/* quick add: "Study Maths tomorrow 2h !high #study" */
 function parse(t){
   const o={pri:'medium',due:'',est:0,tag:''};
   t=t.replace(/!(high|medium|med|low)\b/i,(m,p)=>{p=p.toLowerCase();o.pri=p[0]=='h'?'high':p[0]=='l'?'low':'medium';return ''});
@@ -222,10 +222,7 @@ function progress(){
     cells.push(`<span class="l${lv}" title="${d}: ${fmt(fo(d))}, ${dn(d)} done"></span>`)}
   $('#heat').innerHTML=cells.join('');
 }
-/* backup + focus mode */
-$('#exportBtn').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));a.download='taskflow-backup-'+today()+'.json';a.click()};
-$('#importBtn').onclick=()=>$('#importFile').click();
-$('#importFile').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!Array.isArray(d.tasks))throw 0;S=Object.assign({focus:{},goal:3,habits:[],reviews:[],dark:false},d);save();theme();habs();revs();render();alert('Backup loaded.')}catch(x){alert('That file is not a TaskFlow backup.')}e.target.value=''};
+/* focus mode */
 $('#fmBtn').onclick=()=>{S.fm=!S.fm;render()};
 const h=new Date().getHours();
 $('#dateLbl').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
